@@ -115,16 +115,3 @@ resource "aws_iam_role_policy" "test_policy" {
 }
 EOF
 }
-
-resource "aws_instance" "web" {
-  ami             = data.aws_ami.amazon_linux.id
-  instance_type   = "t2.micro" 
-  key_name        = var.key_name
-  iam_instance_profile = "${aws_iam_instance_profile.test_profile.name}"
-  security_groups = [aws_security_group.jenkins_sg.name]
-  user_data       = "${file("install_jenkins.sh")}"
-  tags = {
-    Name = "Jenkins"
-  }
-}
-
