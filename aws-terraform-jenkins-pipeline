@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+    tools {
+        terraform 'terraform@local'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/anandkr01045/aws-terraform.git']]])            
+
+          }
+        }
+        
+        stage ("terraform init") {
+            steps {
+                bat 'C:\\Software\\terraform_1.5.6_windows_amd64\\terraform init' 
+            }
+        }
+        
+        stage ("terraform Plan") {
+            steps {
+                echo "Terraform Plan"
+                withCredentials([usernamePassword(credentialsId: 'DevSecOps_AWS_Key', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                bat 'C:\\Software\\terraform_1.5.6_windows_amd64\\terraform plan -var-file="vars/dev-east-1.tfvars"'
+                }
+            }
+        }
+        
+        stage ("terraform Apply") {
+            steps {
+                echo "Terraform Apply}"
+                withCredentials([usernamePassword(credentialsId: 'DevSecOps_AWS_Key', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    bat 'C:\\Software\\terraform_1.5.6_windows_amd64\\terraform apply -var-file="vars/dev-east-1.tfvars" --auto-approve' 
+                    sleep 120
+                }
+           }
+        }
+        
+        stage ("terraform Destroy") {
+            steps {
+                echo "Terraform Destroy}"
+                withCredentials([usernamePassword(credentialsId: 'DevSecOps_AWS_Key', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    bat 'C:\\Software\\terraform_1.5.6_windows_amd64\\terraform destroy -var-file="vars/dev-east-1.tfvars" --auto-approve' 
+                }
+           }
+        }
+    }
+}
