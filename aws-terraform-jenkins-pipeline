@@ -14,7 +14,7 @@ pipeline {
         
         stage ("terraform init") {
             steps {
-                bat 'C:\\Software\\terraform_1.5.6_windows_amd64\\terraform init' 
+                bat 'C:\\Program Files\\TerraForm\\terraform init' 
             }
         }
         
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 echo "Terraform Plan"
                 withCredentials([usernamePassword(credentialsId: 'DevSecOps_AWS_Key', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                bat 'C:\\Software\\terraform_1.5.6_windows_amd64\\terraform plan -var-file="vars/dev-east-1.tfvars"'
+                bat 'C:\\Program Files\\TerraForm\\terraform plan -var-file="vars/dev-east-1.tfvars"'
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 echo "Terraform Apply}"
                 withCredentials([usernamePassword(credentialsId: 'DevSecOps_AWS_Key', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    bat 'C:\\Software\\terraform_1.5.6_windows_amd64\\terraform apply -var-file="vars/dev-east-1.tfvars" --auto-approve' 
+                    bat 'C:\\Program Files\\TerraForm\\terraform apply -var-file="vars/dev-east-1.tfvars" --auto-approve' 
                     sleep 120
                 }
            }
@@ -41,7 +41,7 @@ pipeline {
             steps {
                 echo "Terraform Destroy}"
                 withCredentials([usernamePassword(credentialsId: 'DevSecOps_AWS_Key', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    bat 'C:\\Software\\terraform_1.5.6_windows_amd64\\terraform destroy -var-file="vars/dev-east-1.tfvars" --auto-approve' 
+                    bat 'C:\\Program Files\\TerraForm\\terraform destroy -var-file="vars/dev-east-1.tfvars" --auto-approve' 
                 }
            }
         }
